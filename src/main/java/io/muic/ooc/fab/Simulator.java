@@ -17,12 +17,17 @@ public class Simulator {
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
+    private static final double FOX_CREATION_PROBABILITY = 0.05;
     // The probability that a rabbit will be created in any given position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+    // The probability that a TIGER will be created in any given position.
+    private static final double TIGER_CREATION_PROBABILITY= 0.005;
+    // The probability that a new hunter will appear in the forest in any given position.
+    private static final double HUNTER_CREATION_PROBABILITY= 0.0005;
+
 
     // Lists of animals in the field.
-    private List<Animal> animals;
+    private List<Actor> actors;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -53,13 +58,16 @@ public class Simulator {
             width = DEFAULT_WIDTH;
         }
 
-        animals = new ArrayList<>();
+        actors = new ArrayList<Actor>();
         field = new Field(depth, width);
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
         view.setColor(Rabbit.class, Color.ORANGE);
         view.setColor(Fox.class, Color.BLUE);
+        view.setColor(Tiger.class, Color.RED);
+        view.setColor(Hunter.class, Color.BLACK);
+
 
         // Setup a valid starting point.
         reset();
@@ -82,7 +90,7 @@ public class Simulator {
     public void simulate(int numSteps) {
         for (int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            // delay(60);   // uncomment this to run more slowly
+             //delay(60);   // uncomment this to run more slowly
         }
     }
 
@@ -94,13 +102,17 @@ public class Simulator {
         step++;
 
         // Provide space for newborn animals.
-        List<Animal> newAnimals = new ArrayList<>();
+        List<Actor> newAnimals = new ArrayList<>();
         // Let all animals act.
-        for (Iterator<Animal> it = animals.iterator(); it.hasNext();) {
-            Animal animal = it.next();
-            animal.act(newAnimals);
-            if (!animal.isAlive()) {
-                it.remove();
+        for (Iterator<Actor> it = actors.iterator(); it.hasNext();) {
+            Actor actor = it.next();
+            if (actor instanceof Animal)		//	check if actor is an animal
+            {
+                Animal animal = (Animal) actor;
+                actor.act(newAnimals);
+                if (!animal.isAlive()) {
+                    it.remove();
+                }
             }
         }
 
@@ -108,7 +120,7 @@ public class Simulator {
 
 
         // Add the newly born foxes and rabbits to the main lists.
-        animals.addAll(newAnimals);
+        actors.addAll(newAnimals);
 
         view.showStatus(step, field);
     }
@@ -118,7 +130,7 @@ public class Simulator {
      */
     public void reset() {
         step = 0;
-        animals.clear();
+        actors.clear();
         populate();
 
         // Show the starting state in the view.
@@ -136,12 +148,23 @@ public class Simulator {
                 if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Fox fox = new Fox(true, field, location);
-                    animals.add(fox);
+                    actors.add(fox);
                 } else if (RANDOM.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Rabbit rabbit = new Rabbit(true, field, location);
-                    animals.add(rabbit);
+                    actors.add(rabbit);
                 }
+                else if (RANDOM.nextDouble() <= TIGER_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Tiger tiger = new Tiger(true, field, location);
+                    actors.add(tiger);
+                }
+                else if (RANDOM.nextDouble() <= HUNTER_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Hunter hunter = new Hunter(field, location);
+                    actors.add(hunter);
+                }
+
                 // else leave the location empty.
             }
         }

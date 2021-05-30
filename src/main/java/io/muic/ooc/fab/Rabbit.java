@@ -42,7 +42,7 @@ public class Rabbit extends Animal {
      * @param animals A list to return newly born rabbits.
      */
     @Override
-    public void act(List<Animal> animals) {
+    public void act(List<Actor> animals) {
         incrementAge();
         if (isAlive()) {
             giveBirth(animals);

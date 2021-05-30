@@ -3,7 +3,7 @@ package io.muic.ooc.fab;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Animal {
+public abstract class Animal implements Actor{
     // Whether the animal is alive or not.
     private boolean alive;
 
@@ -70,7 +70,8 @@ public abstract class Animal {
      *
      * @param newLocation The rabbit's new location.
      */
-    protected void setLocation(Location newLocation) {
+
+    public void setLocation(Location newLocation) {
         if (location != null) {
             field.clear(location);
         }
@@ -113,7 +114,7 @@ public abstract class Animal {
      *
      * @param newRabbits A list to return newly born rabbits.
      */
-    protected void giveBirth(List<Animal> newRabbits) {
+    protected void giveBirth(List<Actor> newRabbits) {
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
         List<Location> free = field.getFreeAdjacentLocations(location);
@@ -125,7 +126,7 @@ public abstract class Animal {
         }
     }
 
-    public abstract void act(List<Animal> animals);
+
 
 
 }
