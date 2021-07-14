@@ -25,6 +25,9 @@ public class Hunter implements Actor {
         if (newLocation != null) {
             setLocation(newLocation);
         }
+        if (newLocation != null) {
+            setLocation(newLocation);
+        }
 
     }
 

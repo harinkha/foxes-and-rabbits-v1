@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.Color;
 
-public class Simulator {
+public class Simulator extends Observable{
 
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
@@ -34,6 +34,7 @@ public class Simulator {
     private int step;
     // A graphical view of the simulation.
     private SimulatorView view;
+    private SimulatorViewObserver simulatorViewObserver;
     // Random generator
     private static final Random RANDOM = new Random();
 
@@ -56,6 +57,7 @@ public class Simulator {
             System.out.println("Using default values.");
             depth = DEFAULT_DEPTH;
             width = DEFAULT_WIDTH;
+            addObserver(simulatorViewObserver);
         }
 
         actors = new ArrayList<Actor>();
